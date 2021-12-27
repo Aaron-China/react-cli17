@@ -1,0 +1,56 @@
+@normal: #3F66E0;
+@edit: #00C7B8;
+@rest: #FBA908;
+@delete: #EC2424;
+@other: #09BCE4;
+@edit: #00C7B8;
+@active: #00f6f0;
+// 可视化组件标题高度
+@titleHeight: 25px;
+
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+.App {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  /* 公共样式 */
+  /* 按钮 */
+  /* 新增 导入 导出 */
+  .n-btn {
+    color: #fff;
+    background-color: @normal;
+  }
+  /* 编辑 */
+  .e-btn {
+    color: #fff;
+    background-color: @edit;
+  }
+  /* 重置 */
+  .w-btn {
+    color: #fff;
+    background-color: @rest;
+  }
+  /* 删除 */
+  .d-btn {
+    color: #fff;
+    background-color: @delete;
+  }
+  /* 其他 */
+  .o-btn {
+    color: #fff;
+    background-color: @other;
+  }
+}

@@ -7,6 +7,8 @@
 
 # testing
 /coverage
+便签.html
+react指令.html
 
 # production
 /build

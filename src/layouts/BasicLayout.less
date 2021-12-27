@@ -1,0 +1,27 @@
+.basicLayout {
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  justify-content: space-between;
+  .content {
+    width: 100%;
+    .header {
+      height: 50px;
+      position: relative;
+      box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+      .avatar {
+        position: absolute;
+        right: 10px;
+        line-height: 50px;
+        cursor: pointer;
+        .name {
+          padding: 0 10px;
+        }
+      }
+    }
+    .body {
+      padding: 10px;
+    }
+  }
+}
