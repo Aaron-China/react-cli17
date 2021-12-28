@@ -301,6 +301,7 @@ CSearchModal.propTypes = {
   formList: PropTypes.array,
   onBack: PropTypes.func,
   onSearch: PropTypes.func,
+  children: PropTypes.element,
 };
 
 export default CSearchModal;
