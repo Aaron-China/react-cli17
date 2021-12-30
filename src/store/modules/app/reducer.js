@@ -1,13 +1,12 @@
 
-const initState={
+const initState = {
   token: '',   //token
   user: {},   // 用户信息
   factoryList: [],
   permission: [],   // 所有权限. type 类型 区分菜单和按钮  path权限所在的菜单路径  key 是权限关键字,按钮才有
   auth: [],         //   按钮权限
-
 };
-const reducer = (state = initState, action) => {
+const app = (state = initState, action) => {
   const d = action.data;
   switch (action.type) {
   case 'app/setToken':
@@ -30,5 +29,5 @@ const reducer = (state = initState, action) => {
     return state
   }
 };
-
-export default reducer;
+let  a = app
+export default a;
