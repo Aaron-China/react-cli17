@@ -25,16 +25,15 @@ const modalFormList = [
   { label: '物料编码', key: 'materialCode', type: "batchInput" },
   { label: '数量', key: 'qty', type: "number" },
 ];
-let pagination = { current: 1, pageSize: 3, total: 0 };
 
 function Report() {
   const factoryList = useSelector(state => state.app.factoryList),
         auth = useSelector(state => state.app.auth[window.location.pathname] || {});
   let [loading, setLoading] = useState(false),
-      [search, setSearch] = useState({}),
+      [search, setSearch] = useState({data: {}, pagination: {current: 1, pageSize: 3}}),
+      [total, setTotal] = useState(0),
       [dataSource, setDataSource] = useState([]),
       [selectedRowId, setSelectedRowId] = useState([]),
-      [selectedRowKeys, setSelectedRowKeys] = useState([]),
       [modal, setModal] = useState({}),
       [formData, setFormData] = useState({});
   const columns = [
@@ -50,44 +49,11 @@ function Report() {
       width: 70,
       align: 'center',
       render: (text, record ) => {
-        return auth.edit ? (<a onClick={() => edit(record) }>编辑</a>) : ''
+        return auth?.edit ? (<span className="e-tb" onClick={() => edit(record) }>编辑</span>) : ''
       }
     }
   ];
-  useEffect(() => {
-    //初始化数据 
-    formList[0].option = factoryList
-    modalFormList[0].option = factoryList
-    let list =[];
-    for (let i = 0; i < 999; i++) {
-      list.push({label: i+1, value: i+1})
-    }
-    formList[4].option = list
-    getData();
-  }, []);
 
-  // 查询表格数据
-  const getData = () => {
-    setLoading(true);
-    const params = {
-      ...search,
-      current: pagination.current,
-      size: pagination.pageSize
-    }
-    getList(params).then(res => {
-      if (res.code === 200) {
-        let d = res.data;
-        setDataSource(d.records);
-        pagination = {
-          current: d.current, pageSize: d.size, total: d.total
-        };
-      }
-      setLoading(false);
-    })
-    .catch(err => {
-      setLoading(false);
-    });
-  };
   // 搜索
   const handleSearch = (d) => {
     if(d.sendTime) d.sendTime = dayjs(d.sendTime).format('YYYY-MM-DD HH:mm:ss')
@@ -97,24 +63,26 @@ function Report() {
         dayjs(d.createTime[1]).format('YYYY-MM-DD HH:mm:ss')
       ]
     }
-    pagination.current = 1;
-    setSearch(d);
-    getData();
+    console.log(d)
+    setSearch({
+      data: {...d},
+      pagination: {...search.pagination, current: 1}
+    });
   };
   // 搜索框单个项值变化的回调
   const handleBack = (v, k) => {
-    console.log(v, k)
+    // console.log(v, k)
   };
   // 选择表格数据
   const handleSelect = (keys, rows) => {
     setSelectedRowId(keys);
-    setSelectedRowKeys(rows);
   };
   // 分页、筛选、排序变化
   const tableChange = (p, f, s) => {
-    pagination.current = p.current
-    pagination.pageSize = p.pageSize
-    getData();
+    setSearch({
+      ...search,
+      pagination: {...p}
+    });
   };
   // 新增
   const add = () => {
@@ -181,7 +149,43 @@ function Report() {
     // })
     // expoerExcel(newC, dataSource, '表格下载')
   }
+  // 初始化下拉列表数据
+  useEffect(() => {
+    formList[0].option = factoryList
+    modalFormList[0].option = factoryList
+    let list =[];
+    for (let i = 0; i < 999; i++) {
+      list.push({label: i+1, value: i+1})
+    }
+    formList[4].option = list
+  }, [factoryList]);
 
+  // 初始化会执行一次，后续每次查询条件、页码变化都会执行。符合表格的逻辑
+  useEffect(() => {
+    // 查询表格数据
+    const getData = () => {
+      setLoading(true);
+      const { data, pagination } = search;
+      const params = {
+        ...data,
+        current: pagination.current,
+        size: pagination.pageSize
+      }
+      getList(params).then(res => {
+        if (res.code === 200) {
+          let d = res.data;
+          setDataSource(d.records);
+          setTotal(d.total)
+        }
+        setLoading(false);
+      })
+      .catch(err => {
+        setLoading(false);
+      });
+    };
+    getData();
+  }, [search]);
+  
   return (
     <div className="report-page">
       <CSearchModal formList={formList} onSearch={handleSearch} onBack={handleBack}>
@@ -196,8 +200,8 @@ function Report() {
         selected
         columns={columns}
         dataSource={dataSource}
-        pagination={pagination}
-        total={pagination.total}
+        pagination={search.pagination}
+        total={total}
         selectedRow={selectedRowId}
         tableChange={tableChange}
         selectChange={handleSelect}

@@ -6,6 +6,7 @@ import zhCN from 'antd/lib/locale/zh_CN';
 const Login = React.lazy(() => import('@views/Login'));
 const Home = React.lazy(() => import('@views/Home'));
 const BasicLayout = React.lazy(() => import('@layouts/BasicLayout'));
+const Page404 = React.lazy(() => import('@views/404'));
 // switch 改名 Routes， redirect 改名 Navigate
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
             <Routes>
               <Route exact path='/login' element={<Login />} />
               <Route exact path='/home' element={<Home />} />
+              <Route exact path='/404' element={<Page404 />} />
               <Route exact path='*' element={<BasicLayout />} />
             </Routes>
           </Suspense>

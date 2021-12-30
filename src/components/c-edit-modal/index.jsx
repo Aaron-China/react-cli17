@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { Modal, Form, Row, Col, Input, InputNumber, Select, DatePicker, Checkbox, Button } from "antd";
 import { CLargeSelect, CBatchInput } from "@components/index.js";
@@ -22,18 +22,6 @@ const CEditModal = ({
 }) => {
   const [editForm] = Form.useForm();
 
-  useEffect(() => {
-    if(visible) init()
-  }, [visible]);
-
-  // 初始化
-  const init = () => {
-    if(type === 'edit') {
-      editForm.setFieldsValue(initData);
-    } else {
-      editForm.resetFields();
-    }
-  };
   // 确定的回调
   const handleOk = () => {
     let v = editForm.getFieldsValue();
@@ -48,6 +36,17 @@ const CEditModal = ({
     if (onBack) onBack(v, k);
   };
 
+  useEffect(() => {
+    // 初始化
+    if(visible) {
+      if(type === 'edit') {
+        editForm.setFieldsValue(initData);
+      } else {
+        editForm.resetFields();
+      }
+    }
+  }, [visible, initData, type, editForm]);
+
   return (
     <Modal
       className="c-edit-modal"
@@ -56,6 +55,7 @@ const CEditModal = ({
       visible={visible}
       forceRender={true}
       maskClosable={maskClosable}
+      onCancel={handleCancel}
       footer={[
         <Button key="cancel" onClick={handleCancel}>
           取消

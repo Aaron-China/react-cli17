@@ -69,7 +69,6 @@ export function makeQuery (obj = {}) {
 
 // 表单自定义校验，校验长度
 export function checklength(_, value) {
-  console.log(value)
   if (value) {
     const arr = value.split(',')
     if (arr.length > 500) {
@@ -85,7 +84,7 @@ export function checklength(_, value) {
 export function checkRepeat (_, value) {
   if (value) {
     const arr = value.split(',')
-    if ((new Set(arr)).size != arr.length) {
+    if ((new Set(arr)).size !== arr.length) {
       return Promise.reject(new Error('存在重复信息'));
     } else {
       return Promise.resolve();

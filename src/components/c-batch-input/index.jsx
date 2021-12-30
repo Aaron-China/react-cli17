@@ -43,7 +43,8 @@ const CBatchInput = ({
   };
   // 弹窗确定
   const handleOk = () => {
-    const reg = new RegExp("[\r\n]","g");
+    // 注意换行符和制表符都是特殊控制字符，eslint会报警告
+    const reg = new RegExp("[\\r\\n]","g");
     let newValue = (textarea || '').replace(reg, mark)
     if(newValue[newValue.length- 1] === mark) {
       newValue = newValue.slice(0, newValue.length - 1)

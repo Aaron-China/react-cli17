@@ -7,41 +7,62 @@
   <title>便签</title>
 </head>
 <body>
-   <a href="https://github.com/Aaron-China/react-cli17/tree/master/src/components/c-menu" style="text-decoration: none;" target="_black">点这里，看源码</a>
-  <!-- 
-    构建流程：
-      1、注意，需要node14以上的版本，先升级一下node
-      2、npx create-react-app react-cli17    创建应用
-      3、完善目录结构 把 components route store 等等这些文件夹先创建了
-      4、npm run eject  显示配置文件  
-         改一下端口号
-         配置快捷路径 @
-      5、npm install http-proxy-middleware --save 安装代理中间件
-         创建 src/setupProxy.js 文件，配置本地代理服务
-      6、npm install less less-loader --save  安装less 和 less-loader
-         npm i style-resources-loader
-         config/webpack.config.js 增加less的配置，参考sass即可, 区别是额外增加全局样式的引入
-      7、npm install --save react-router  配置路由文件
-      8、npm install axios
-      9、npm install redux
-         npm install react-redux
-         npm i redux-thunk 中间件,状态管理只要满足需求，能处理异步问题即可，用什么都行。文档写的很清楚。
-            这三大件基本够用了，不够的，redux插件库还有
-      1、npm i antd --save
-         npm i --save @ant-design/icons
-         npm install babel-plugin-import --save--dev
-         npm i dayjs
-         修改package.json，的babel配置，参考antd的官方文档
-      11、npm i prop-types 做类型检查
-      12、npm install mock 安装mock
+   <a href="https://github.com/Aaron-China/react-cli17" style="text-decoration: none;" target="_black">点这里，看源码</a>
+   <a href="#d1" style="text-decoration: none;"></a>
+   <!-- 
+      提高前端性能，很有用
+      https://www.cnblogs.com/mazey/p/15740756.html
+
+      useMome
+
+      docker 用法 原理 写一篇html
+      node写一篇
+      js要写
+      nginx配置写一篇，包括docker上的打包指令
+
+
+
+      hooks 生命周期对照
+      constructor：函数组件不需要构造函数。你可以通过调用 useState 来初始化 state。如果计算的代价比较昂贵，你可以传一个函数给 useState。
+      getDerivedStateFromProps：改为 在渲染时 安排一次更新。
+      shouldComponentUpdate：你可以用 React.memo 包裹一个组件来对它的 props 进行浅比较
+      render：这是函数组件体本身。
+      componentDidMount, componentDidUpdate, componentWillUnmount：useEffect Hook 可以表达所有这些(包括 不那么 常见 的场景)的组合。
+      getSnapshotBeforeUpdate，componentDidCatch 以及 getDerivedStateFromError：目前还没有这些方法的 Hook 等价写法，但很快会被添加。
+      componentDidCatch             无
+      gitDerivedStateFromError      无
+
+
+      hooks的本质是-闭包。
+      它在外部作用域存储了值。
+      当setState发生时，整个函数（相当于render）都被触发调用，那么所有的变量就会重新赋值就像是下面的关键字：
+
+
+
+
+
+ The ref value 'scrollEle.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'scrollEle.current' to a variable inside the effect, and use that variable in the cleanup function
+React Hook useEffect has missing dependencies: 'handleScroll', 'initScroll', 'rowHeight', and 'rows'. Either include them or remove the dependency array. If 'setShow' needs the current value of 'rows', you can also switch to useReducer instead of useState and read 'rows' in the reducer
+React Hook useMemo has an unnecessary dependency: 'MENU'. Either exclude it or remove the dependency array. Outer scope values like 'MENU' aren't valid dependencies because mutating them doesn't re-render the component 
+Assign object to a variable before exporting as module default
+React Hook useCallback has a missing dependency: 'getData'. Either include it or remove the dependency array
+
+
+useRef
+
+
+
+
+
+
+
+
+
 
       https://github.com/Aaron-China/react-cli17
 
 
    功能：
-      hooks 组件， 路由，页面布局，prop-types类型检查，全局less变量和样式
-      axios 不跳转页面，因为用不了router，直接清除token，从而跳转login
-      import { useSelector, useDispatch, shallowEqual } from 'react-redux'
 
       useEffect 在这请求数据
       触发机制 每次dom渲染结束之后，都会触发
@@ -55,15 +76,10 @@
 
 
       优化函数执行次数的问题
-
-
       虽然函数组件不断执行，但是也有优化手段
       const otherName =  useMemo(()=>changeName(name),[name])
       这样只要name值没变化， changeName 方法就不会执行
       
-
-      react hooks  实现vue的插槽  一个是对象，多个是数组，这个要注意
-
 
 
       redux-thunk 的用法   https://zhuanlan.zhihu.com/p/85403048
@@ -78,37 +94,9 @@
       store.dispatch(login('Lucy'))
 
    问题：
-      Suspense 打开新页面，闪烁
-      测试不同模块，同名reducer，会不会都执行的问题
-      类似于vue的插槽功能怎么实现
 
-      useState 的变量修改方法是异步执行的，也就是说
-         let [num, setNum] = useState(0);
-         setNum(5);
-         console.log(num)  // 输出0， 因为是异步执行的。这点和vue区别很大
-
-         const [num, setnum] = useState({a: 0, b: 1});
-         const handleClick = () => {
-            setnum({
-               a: num.a + 1,
-               b: num.b + 1,
-            });
-            console.log(num)
-         };
-
-         return (
-            <div className="report-page">
-               <div onClick={handleClick}>点击{num.a}</div>
-
-
-
-
-
-
-      鉴于目前的环境吧，没用ts，可能再过几年，ts就能替代js了。
-      类型检查使用 prop-types
       函数组件 prop-types 做类型检查，props必须在形参中结构声明，默认值直接附上即可
-      所有检查类型：
+       prop-types所有检查类型：
       https://reactjs.org/docs/typechecking-with-proptypes.html
 
       router 升级，迁移攻略
@@ -118,12 +106,6 @@
 
 
 
-
-       HTTP请求的参数怎么输入的问题， 其实还是分 数值 文本 时间
-    数据源的编辑和组件配置终究还是要分开编辑
-    数据源结果还是改成自己选择，然后生成数组，组件选择比较好
-    看板定时刷新数据，控制器刷新数据看板的按钮加上
-    上边做完，可视化就先暂停吧
 
     react的context做状态管理
     https://zhuanlan.zhihu.com/p/413298022

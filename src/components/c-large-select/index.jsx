@@ -24,55 +24,6 @@ const CLargeSelect = ({
       [show, setShow] = useState([]),
       [open, setOpen] = useState(false);
 
-  useEffect(() => {
-    setShow(list.length > rows ? list.slice(0, rows) : list);
-    setTotalHeight(list.length * rowHeight);
-    initScroll();
-    // 卸载前，取消监听
-    return () => {
-      if(list.length > rows && scrollEle.current) {
-        scrollEle.current.removeEventListener('scroll', handleScroll, false);
-        scrollEle.current.removeEventListener('mousedown', handleMouse, false);
-        scrollEle.current.removeEventListener('mouseup', handleMouse, false);
-      }
-      setOpen(false);
-      setShow([]);
-    }
-  }, [list]);
-
-  // 初始化事件
-  const initScroll = () => {
-    if(list.length > rows) {
-      scrollEle.current.scrollTop = 0
-      scrollEle.current.addEventListener('scroll', handleScroll);
-      scrollEle.current.addEventListener('mousedown', () => handleMouse(true));
-      scrollEle.current.addEventListener('mouseup', () => handleMouse(false));
-    }
-  };
-  // 监听鼠标事件的方法
-  const handleMouse = (v) => {
-    mousedown = v
-  };
-  // 监听虚拟滚轮变化，计算展示的数据
-  const handleScroll = (e) => {
-    const { scrollTop, scrollHeight } = e.target
-    let lenMax = list.length, nIdx;
-    
-    if(scrollTop === 0) { // 滑到顶，从头展示
-      setShow(list.slice(0, rows));
-      idx = 0
-    } else if(scrollTop - (scrollHeight - listHeight) > -rowHeight ) { // 滑到底了，但是js监听精度不准，需要做一行的误差容错
-      nIdx = lenMax - rows;
-      setShow(list.slice(nIdx, nIdx + rows));
-      idx = nIdx;
-    } else {  // 其他情况，照常处理数据
-      nIdx = Math.ceil(scrollTop * lenMax / scrollHeight)
-      if(nIdx !== idx && nIdx <= (lenMax - rows)) {
-        setShow(list.slice(nIdx, nIdx + rows));
-        idx = nIdx;
-      }
-    }
-  };
   const handleSearch = (d) => {
     let newList = list.filter(item => `${item.label}`.toLowerCase().indexOf(d.toLowerCase()) >= 0);
     setShow(newList.slice(0, rows));
@@ -90,6 +41,54 @@ const CLargeSelect = ({
   const handleDrop = (d) => {
     setOpen(mousedown ? true : d)
   };
+  useEffect(() => {
+    // 监听鼠标事件的方法
+    const handleMouse = (v) => {
+      mousedown = v
+    };
+    // 监听虚拟滚轮变化，计算展示的数据
+    const handleScroll = (e) => {
+      const { scrollTop, scrollHeight } = e.target
+      let lenMax = list.length, nIdx;
+      
+      if(scrollTop === 0) { // 滑到顶，从头展示
+        setShow(list.slice(0, rows));
+        idx = 0
+      } else if(scrollTop - (scrollHeight - listHeight) > -rowHeight ) { // 滑到底了，但是js监听精度不准，需要做一行的误差容错
+        nIdx = lenMax - rows;
+        setShow(list.slice(nIdx, nIdx + rows));
+        idx = nIdx;
+      } else {  // 其他情况，照常处理数据
+        nIdx = Math.ceil(scrollTop * lenMax / scrollHeight)
+        if(nIdx !== idx && nIdx <= (lenMax - rows)) {
+          setShow(list.slice(nIdx, nIdx + rows));
+          idx = nIdx;
+        }
+      }
+    };
+    //  初始化事件
+    const init = () => {
+      setShow(list.length > rows ? list.slice(0, rows) : list);
+      setTotalHeight(list.length * rowHeight);
+      if(list.length > rows) {
+        scrollEle.current.scrollTop = 0
+        scrollEle.current.addEventListener('scroll', handleScroll);
+        scrollEle.current.addEventListener('mousedown', () => handleMouse(true));
+        scrollEle.current.addEventListener('mouseup', () => handleMouse(false));
+      }
+    }
+    // 卸载前，取消监听
+    const unInit = () => {
+      if(list.length > rows && scrollEle.current) {
+        scrollEle.current.removeEventListener('scroll', handleScroll, false);
+        scrollEle.current.removeEventListener('mousedown', handleMouse, false);
+        scrollEle.current.removeEventListener('mouseup', handleMouse, false);
+      }
+    };
+
+    init();
+    return unInit;
+  }, [list, rows, rowHeight, listHeight]);
 
   return (
     <div className='c-large-select'>
@@ -114,7 +113,11 @@ const CLargeSelect = ({
           })
         }
       </Select>
-      <div className="sc" ref={scrollEle} style={{height: listHeight+'px', display: (open && list.length > rows) ? 'block' : 'none'}}>
+      <div 
+        className="sc" 
+        ref={scrollEle} 
+        style={{height: listHeight+'px', display: (open && list.length > rows) ? 'block' : 'none'}}
+      >
         <div className="scbc" style={{height: totalHeight+'px'}}></div>
       </div>
     </div>

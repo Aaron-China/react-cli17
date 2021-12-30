@@ -1,6 +1,6 @@
 function Delete() {
   return (
-    <div className="App">Delete</div>
+    <div>Delete</div>
   );
 }
 

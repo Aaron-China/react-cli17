@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import * as Highcharts from '@jsModule/highcharts/highcharts-gantt.js'
-import { getList, saveD } from "@api/report";
 import dayjs from 'dayjs'
 import{ WEEKS } from './constants'
 
@@ -40,11 +39,7 @@ let gantt = {};
 
 // 具体代码注释，组件的使用详情，去这，有详细说明  https://www.cnblogs.com/pengfei-nie/p/15608101.html
 function Gantt() {
-  useEffect(() => {
-    init();
-  }, []);
-
-  const init = () => {
+  const init = useCallback(() => {
     try {
       gantt = Highcharts.ganttChart('container', {
         title: {
@@ -132,7 +127,7 @@ function Gantt() {
     } catch (error) {
       console.log(error)
     }
-  };
+  }, []);
   const dragStart = (e) => {
   };
   const drag = (e) => {
@@ -176,6 +171,10 @@ function Gantt() {
     })
     console.log(data)
   };
+
+  useEffect(() => {
+    init();
+  }, [init]);
 
   return (
     <div className="hightChart-gantt">

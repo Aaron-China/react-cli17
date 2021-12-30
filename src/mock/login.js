@@ -14,6 +14,12 @@ const LOGIN = {
       { type: 'menu', path: '/setting/role' },
       { type: 'menu', path: '/login' },
       { type: 'menu', path: '/gantt' },
+    ],
+    factoryList: [
+      {value: '001', label: '华为'},
+      {value: '002', label: '谷歌'},
+      {value: '003', label: '中芯国际'},
+      {value: '004', label: '宁德时代'}
     ]
   }
 }

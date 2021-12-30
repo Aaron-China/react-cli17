@@ -3,7 +3,6 @@
 @rest: #FBA908;
 @delete: #EC2424;
 @other: #09BCE4;
-@edit: #00C7B8;
 @active: #00f6f0;
 // 可视化组件标题高度
 @titleHeight: 25px;
@@ -52,5 +51,16 @@ code {
   .o-btn {
     color: #fff;
     background-color: @other;
+  }
+
+  /* 表格编辑操作 */
+  .e-tb {
+    color: @edit;
+    cursor: pointer;
+  }
+  /* 表格删除操作 */
+  .d-tb {
+    color: @delete;
+    cursor: pointer;
   }
 }

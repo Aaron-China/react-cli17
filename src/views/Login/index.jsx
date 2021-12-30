@@ -16,7 +16,7 @@ function Login() {
     login(values).then(res => {
       setLoading(false);
       if(res.code === 200) {
-        const { permission, token } = res.data;
+        const { permission, token, factoryList } = res.data;
         let auth = {}, param = {};
         permission.filter(item => item.type === 'btn').forEach(item => {
           if(auth[item.path]) {
@@ -31,7 +31,8 @@ function Login() {
           user: { id: 1186, name: '张三' },
           permission,
           auth,
-          token
+          token,
+          factoryList
         };
         dispatch(setUser(param))
         message.success('登陆成功');

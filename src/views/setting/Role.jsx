@@ -1,6 +1,6 @@
 function Role() {
   return (
-    <div className="App">Role</div>
+    <div>Role</div>
   );
 }
 

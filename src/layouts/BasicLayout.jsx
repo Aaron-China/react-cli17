@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo, useRef } from 'react'
 import { Routes, Route, useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { Menu, Dropdown, message } from 'antd';
@@ -25,6 +25,7 @@ const mapMenu = (l) => {
 
 const BasicLayout = () => {
   const navigate = useNavigate();
+  const navigation = useRef(navigate);
   const dispatch = useDispatch();
   const user = useSelector(state => state.app.user);
   let [menu, setMenu] = useState({
@@ -33,15 +34,22 @@ const BasicLayout = () => {
     activeKeys: ''
   });
 
-  useEffect(() => {
-    getUserInfoFunc();
-  }, []);
+  // 退出登录
+  const logout = () => {
+    dispatch(setToken({token: ''}));
+    navigate('/login');
+  }
+  const dropdownMenu = (<Menu>
+    <Menu.Item key="logout" onClick={logout}>退出登录</Menu.Item>
+  </Menu>);
+  // 渲染路由,减少页面渲染次数
+  const renderRoute = useMemo(() => mapMenu(MENU), []);
 
-  // 初始化时，获取用户信息、权限等
-  const getUserInfoFunc = () => {
+  useEffect(() => {
+    // 初始化时，获取用户信息、权限等
     getUserInfo().then(res => {
       if(res.code === 200) {
-        let auth = {}, perm = res.data.permission, to = res.data.token, param = {};
+        let auth = {}, perm = res.data.permission, to = res.data.token, param = {}, factoryList = res.data.factoryList;
         perm.filter(item => item.type === 'btn').forEach(item => {
           if(auth[item.path]) {
             auth[item.path][item.key] = true
@@ -55,15 +63,14 @@ const BasicLayout = () => {
           user: { id: 1186, name: '张三' },
           perm,
           auth,
-          token: to
+          token: to,
+          factoryList: factoryList
         };
-        dispatch(setUser(param))
-        
+        dispatch(setUser(param));
         // 刷新界面、输入地址时，校验权限
-        let flag =  perm.some(item => item.path === window.location.pathname);
-        if(!flag) {
-          navigate('/login')
-        }
+        // 相当于实现了路由守卫的功能
+        let flag = perm.some(item => item.path === window.location.pathname);
+        if(!flag) navigation.current.navigate('/login');
         // 按权限过滤菜单,转一下json，避免对象原型修改, 默认菜单数据
         let m = JSON.parse(JSON.stringify(MENU)),
             permi = perm.filter(item => item.type === 'menu'),
@@ -78,15 +85,7 @@ const BasicLayout = () => {
         message.error(res.msg);
       }
     })
-  }
-  // 退出登录
-  const logout = () => {
-    dispatch(setToken({token: ''}))
-    navigate('/login')
-  }
-  const dropdownMenu = (<Menu>
-    <Menu.Item key="logout" onClick={logout}>退出登录</Menu.Item>
-  </Menu>);
+  }, [dispatch, navigation]);
 
   return (<div className='basicLayout'>
     <CMenu 
@@ -107,7 +106,7 @@ const BasicLayout = () => {
       </div>
       <div className='body'>
         <Routes>
-          { mapMenu(MENU) }
+          { renderRoute }
         </Routes>
       </div>
     </div>

@@ -70,7 +70,7 @@ const CSearchModal = ({
                     重置
                   </Button>
                   {formList.length > 4 && (
-                    <a className="more-btn" onClick={toggle}>
+                    <span className="more-btn" onClick={toggle}>
                       {expand ? (
                         <span>
                           合并
@@ -82,7 +82,7 @@ const CSearchModal = ({
                           <DownOutlined />
                         </span>
                       )}
-                    </a>
+                    </span>
                   )}
                 </div>
               </Col>

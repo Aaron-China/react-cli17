@@ -5,7 +5,6 @@ import "./index.less";
 const page = {
   current: 1,
   pageSize: 20,
-  total: 0,
   showSizeChanger: true,
   showQuickJumper: true,
   pageSizeOptions: ["20", "50", "100", "200", "500", "1000"],
@@ -21,7 +20,7 @@ const CTable = ({
   selected = false,     // 是否可选
   scrollX,              // 宽度
   scrollY,              // 高度
-  total,                // 数据总数
+  total = 0,                // 数据总数
   selectedRow = [],     // 选中的key集合
   selectChange,         // 选择回调
   tableChange           // 表格回调 分页、筛选、排序
@@ -61,8 +60,8 @@ const CTable = ({
         dataSource={dataSource}
         rowSelection={selected ? { selectedRowKeys: selectedRowKeys, onChange: handleSelect, onSelectAll: handleSelectAll } : null}
         onChange={handleTableChange}
-        pagination={!!pagination ? {showSizeChanger: true, showQuickJumper: true, pageSizeOptions: ['20', '50', '100', '200', '500', '1000'], ...pagination} : false}
-        scroll={{x: scrollX || true, x: scrollY || true}}
+        pagination={!!pagination ? {showSizeChanger: true, showQuickJumper: true, pageSizeOptions: ['20', '50', '100', '200', '500', '1000'], ...pagination, total} : false}
+        scroll={{x: scrollX || true, y: scrollY || true}}
       />
       <span className="totalTip" style={{top: !!pagination ? '-27px' : '6px'}}>共 {total} 条数据</span>
     </div>
